@@ -1,6 +1,3 @@
-//ver 0.2
-//by ZYT Studio
-
 #include <iostream>
 #include <windows.h>
 #include <WinUser.h>
@@ -9,6 +6,9 @@
 #include <cstdlib>
 #include <map>
 #include <algorithm>
+#include <vector>
+#include <cstring>
+#include <sstream>
 #include "keymap.h"
 #include "keybdop.h"
 #include "mouseop.h"
@@ -86,6 +86,15 @@ int Str2Int(string str) {
 		var = -var;
 	}
 	return var;
+}
+
+
+void StrSplit(string str, char split, vector<string>& res) {
+	istringstream iss(str);
+	string token;
+	while (getline(iss, token, split)) {
+		res.push_back(token);
+	}
 }
 
 
@@ -191,22 +200,29 @@ int main(int argc, char const* argv[]) {
 			if (argc < 3) {
 				ErrExit(ERR_WRONG_ARG);
 			}
-			string key = argv[2];
-			int key_val = GetKeyVal(key);
-			if (key_val == -1) {
-				ErrExit(ERR_WRONG_ARG);
+			string key_str_all = argv[2];
+			FmtStr(key_str_all, UPPER);
+			vector<string> key_str;
+			vector<int> key_val;
+			StrSplit(key_str_all, '+', key_str);
+			for (int i = 0; i < key_str.size(); i++) {
+				int cur = GetKeyVal(key_str[i]);
+				if (cur == -1) {
+					ErrExit(ERR_WRONG_ARG);
+				}
+				key_val.push_back(cur);
 			}
 			if (argc == 3) {
-				Keybd.Press(key_val);
+				Keybd.PressCompos(key_val);
 				break;
 			}
 			string action = argv[3];
 			FmtStr(action, UPPER);
 			if (action == "DOWN") {
-				Keybd.Down(key_val);
+				Keybd.DownCompos(key_val);
 			}
 			else if (action == "UP") {
-				Keybd.Up(key_val);
+				Keybd.UpCompos(key_val);
 			}
 			else if (action == "CLICK") {
 				int du = 0;
@@ -214,7 +230,7 @@ int main(int argc, char const* argv[]) {
 					string du_ = argv[4];
 					du = Str2Int(du_);
 				}
-				Keybd.Press(key_val, du);
+				Keybd.PressCompos(key_val, du);
 			}
 			else {
 				ErrExit(ERR_WRONG_ARG);

@@ -21,4 +21,33 @@ public:
 		Sleep(du);
 		Up(vk);
 	}
+
+	void PressCompos(vector<int>& key_val, int du = 200, int start = 0) {
+		int cur = key_val[start];
+		if (start == key_val.size() - 1) {
+			Press(cur, du);
+			return;
+		}
+		Down(cur);
+		PressCompos(key_val, du, start + 1);
+		Up(cur);
+	}
+
+	void DownCompos(vector<int>& key_val, int start = 0) {
+		if (start == key_val.size()) {
+			return;
+		}
+		int cur = key_val[start];
+		Down(cur);
+		DownCompos(key_val, start + 1);
+	}
+
+	void UpCompos(vector<int>& key_val, int start = 0) {
+		if (start == key_val.size()) {
+			return;
+		}
+		int cur = key_val[start];
+		Up(cur);
+		DownCompos(key_val, start + 1);
+	}
 }Keybd;
