@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 #include <map>
-
+#include <cstring>
+#include <algorithm>
 
 static std::map<std::string, int> KEY_MAP_ = {
 	{"LBUTTON", 0x01},  // Left mouse button
@@ -11,14 +12,21 @@ static std::map<std::string, int> KEY_MAP_ = {
 	{ "XBUTTON1", 0x05 },  // X1 mouse button
 	{ "XBUTTON2", 0x06 },  // X2 mouse button
 	{ "BACK", 0x08 },  // BACKSPACE key
+	{ "BACKSPACE", 0x08 },
 	{ "TAB", 0x09 },  // TAB key
 	{ "CLEAR", 0x0C },  // CLEAR key
 	{ "RETURN", 0x0D },  // ENTER key
+	{ "ENTER", 0x0D },
 	{ "SHIFT", 0x10 },  // SHIFT key
 	{ "CONTROL", 0x11 },  // CTRL key
+	{ "CTRL", 0x11 },
 	{ "MENU", 0x12 },  // ALT key
+	{ "ALT", 0x12 },
 	{ "PAUSE", 0x13 },  // PAUSE key
 	{ "CAPITAL", 0x14 },  // CAPS LOCK key
+	{ "CAPSLOCK", 0x14 },
+	{ "CAPSLK", 0x14 },
+	{ "CAPS", 0x14 },
 	{ "KANA", 0x15 },  // IME Kana mode
 	{ "HANGUEL", 0x15 },  // IME Hanguel mode (maintained for compatibility; use {"HANGUL)
 	{ "HANGUL", 0x15 },  // IME Hangul mode
@@ -29,13 +37,18 @@ static std::map<std::string, int> KEY_MAP_ = {
 	{ "KANJI", 0x19 },  // IME Kanji mode
 	{ "IME_OFF", 0x1A },  // IME Off
 	{ "ESCAPE", 0x1B },  // ESC key
+	{ "ESC", 0x1B },
 	{ "CONVERT", 0x1C },  // IME convert
 	{ "NONCONVERT", 0x1D },  // IME nonconvert
 	{ "ACCEPT", 0x1E },  // IME accept
 	{ "MODECHANGE", 0x1F },  // IME mode change request
 	{ "SPACE", 0x20 },  // SPACEBAR
 	{ "PRIOR", 0x21 },  // PAGE UP key
+	{ "PAGEUP", 0x21 },
+	{ "PGUP", 0x21 },
 	{ "NEXT", 0x22 },  // PAGE DOWN key
+	{ "PAGEDOWN", 0x22 },
+	{ "PGDN", 0x22 },
 	{ "END", 0x23 },  // END key
 	{ "HOME", 0x24 },  // HOME key
 	{ "LEFT", 0x25 },  // LEFT ARROW key
@@ -46,8 +59,11 @@ static std::map<std::string, int> KEY_MAP_ = {
 	{ "PRINT", 0x2A },  // PRINT key
 	{ "EXECUTE", 0x2B },  // EXECUTE key
 	{ "SNAPSHOT", 0x2C },  // PRINT SCREEN key
+	{ "PRTSC", 0x2C },
 	{ "INSERT", 0x2D },  // INS key
+	{ "INS", 0x2D },
 	{ "DELETE", 0x2E },  // DEL key
+	{ "DEL", 0x2E },
 	{ "HELP", 0x2F },  // HELP key
 	{ "0", 0x30 },  // 0 key
 	{ "1", 0x31 },  // 1 key
@@ -86,6 +102,7 @@ static std::map<std::string, int> KEY_MAP_ = {
 	{ "Y", 0x59 },  // Y key
 	{ "Z", 0x5A },  // Z key
 	{ "LWIN", 0x5B },  // Left Windows key (Natural keyboard)
+	{ "WIN", 0x5B },
 	{ "RWIN", 0x5C },  // Right Windows key (Natural keyboard)
 	{ "APPS", 0x5D },  // Applications key (Natural keyboard)
 	{ "SLEEP", 0x5F },  // Computer Sleep key
@@ -100,10 +117,15 @@ static std::map<std::string, int> KEY_MAP_ = {
 	{ "NUMPAD8", 0x68 },  // Numeric keypad 8 key
 	{ "NUMPAD9", 0x69 },  // Numeric keypad 9 key
 	{ "MULTIPLY", 0x6A },  // Multiply key
+	{ "ASTERISK", 0x6A },
 	{ "ADD", 0x6B },  // Add key
+	{ "PLUS", 0x6B },
 	{ "SEPARATOR", 0x6C },  // Separator key
 	{ "SUBTRACT", 0x6D },  // Subtract key
+	{ "MINUS", 0x6D },
 	{ "DECIMAL", 0x6E },  // Decimal key
+	{ "POINT", 0x6E },
+	{ "DOT", 0x6E },
 	{ "DIVIDE", 0x6F },  // Divide key
 	{ "F1", 0x70 },  // F1 key
 	{ "F2", 0x71 },  // F2 key
@@ -131,6 +153,8 @@ static std::map<std::string, int> KEY_MAP_ = {
 	{ "F24", 0x87 },  // F24 key
 	{ "NUMLOCK", 0x90 },  // NUM LOCK key
 	{ "SCROLL", 0x91 },  // SCROLL LOCK key
+	{ "SCROLLOCK", 0x91 },
+	{ "SCROLLK", 0x91 },
 	{ "LSHIFT", 0xA0 },  // Left SHIFT key
 	{ "RSHIFT", 0xA1 },  // Right SHIFT key
 	{ "LCONTROL", 0xA2 },  // Left CONTROL key

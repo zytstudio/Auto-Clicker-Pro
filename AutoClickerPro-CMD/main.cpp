@@ -1,6 +1,3 @@
-//ver 0.2
-//by ZYT Studio
-
 #include <iostream>
 #include <windows.h>
 #include <WinUser.h>
@@ -9,18 +6,17 @@
 #include <cstdlib>
 #include <map>
 #include <algorithm>
-#include "keymap.h"
-#include "keybdop.h"
-#include "mouseop.h"
+#include <vector>
+#include <cstring>
+#include <sstream>
+#include "AutoClickerPro.h"
+#include "MouseAPI.h"
+#include "KeybdAPI.h"
 
 
 #define ERR_NO_ARG -1
 #define ERR_WRONG_ARG -2
 #define ERR_Unknown -127
-
-#define UPPER 0
-#define LOWER 1
-// #define INITCAP 2
 
 
 using namespace std;
@@ -42,21 +38,12 @@ void ErrExit(int error_code) {
 }
 
 
-int FmtStr(string& str, int op = UPPER) {
-	switch (op) {
-		case UPPER: {
-			transform(str.begin(), str.end(), str.begin(), ::toupper);
-			break;
-		}
-		case LOWER: {
-			transform(str.begin(), str.end(), str.begin(), ::tolower);
-			break;
-		}
-		default: {
-			return -1;
-		}
+void StrSplit(string str, char split, vector<string>& res) {
+	istringstream iss(str);
+	string token;
+	while (getline(iss, token, split)) {
+		res.push_back(token);
 	}
-	return 0;
 }
 
 
@@ -89,17 +76,6 @@ int Str2Int(string str) {
 }
 
 
-int GetKeyVal(string key) {
-	FmtStr(key, UPPER);
-	std::map<string, int>::iterator it;
-	it = KEY_MAP_.find(key);
-	if (it == KEY_MAP_.end()) {
-		return -1;
-	}
-	return it->second;
-}
-
-
 int main(int argc, char const* argv[]) {
 	if (argc == 1) {
 		ErrExit(ERR_NO_ARG);
@@ -115,7 +91,7 @@ int main(int argc, char const* argv[]) {
 				ErrExit(ERR_WRONG_ARG);
 			}
 			string action = argv[2];
-			FmtStr(action, UPPER);
+			FmtStr(action, ALLUPPER);
 			if (action == "GET") {
 				if (argc >= 4) {
 					string delay_ = argv[3];
@@ -124,7 +100,7 @@ int main(int argc, char const* argv[]) {
 					Sleep(delay);
 				}
 				POINT pt;
-				Mouse.GetPt(pt);
+				MouseGetPt(pt);
 				printf("Your mouse position is (%d, %d). \n", pt.x, pt.y);
 			}
 			else if (action == "GOTO") {
@@ -136,26 +112,26 @@ int main(int argc, char const* argv[]) {
 				if (dx < 0 || dy < 0) {
 					ErrExit(ERR_WRONG_ARG);
 				}
-				Mouse.MoveTO(dx, dy);
+				MouseMoveTo(dx, dy);
 			}
 			else if (action == "L") {
 				if (argc == 3) {
-					Mouse.L_Click();
+					MouseLClick();
 					break;
 				}
 				string r_action = argv[3];
-				FmtStr(r_action, UPPER);
+				FmtStr(r_action, ALLUPPER);
 				if (r_action == "DOWN") {
-					Mouse.L_Down();
+					MouseLDown();
 				}
 				else if (r_action == "UP") {
-					Mouse.L_Up();
+					MouseLUp();
 				}
 				else if (r_action == "CLICK") {
-					Mouse.L_Click();
+					MouseLClick();
 				}
 				else if (r_action == "DCLICK") {
-					Mouse.DoubleClick();
+					MouseDoubleClick();
 				}
 				else {
 					ErrExit(ERR_WRONG_ARG);
@@ -163,19 +139,19 @@ int main(int argc, char const* argv[]) {
 			}
 			else if (action == "R") {
 				if (argc == 3) {
-					Mouse.R_Click();
+					MouseRClick();
 					break;
 				}
 				string r_action = argv[3];
-				FmtStr(r_action, UPPER);
+				FmtStr(r_action, ALLUPPER);
 				if (r_action == "DOWN") {
-					Mouse.R_Down();
+					MouseRDown();
 				}
 				else if (r_action == "UP") {
-					Mouse.R_Up();
+					MouseRUp();
 				}
 				else if (r_action == "CLICK") {
-					Mouse.R_Click();
+					MouseRClick();
 				}
 				else {
 					ErrExit(ERR_WRONG_ARG);
@@ -191,22 +167,29 @@ int main(int argc, char const* argv[]) {
 			if (argc < 3) {
 				ErrExit(ERR_WRONG_ARG);
 			}
-			string key = argv[2];
-			int key_val = GetKeyVal(key);
-			if (key_val == -1) {
-				ErrExit(ERR_WRONG_ARG);
+			string key_str_all = argv[2];
+			FmtStr(key_str_all, ALLUPPER);
+			vector<string> key_str;
+			vector<int> key_val;
+			StrSplit(key_str_all, '+', key_str);
+			for (int i = 0; i < key_str.size(); i++) {
+				int cur = GetKeyVal(key_str[i]);
+				if (cur == -1) {
+					ErrExit(ERR_WRONG_ARG);
+				}
+				key_val.push_back(cur);
 			}
 			if (argc == 3) {
-				Keybd.Press(key_val);
+				KeybdPressCompos(key_val);
 				break;
 			}
 			string action = argv[3];
-			FmtStr(action, UPPER);
+			FmtStr(action, ALLUPPER);
 			if (action == "DOWN") {
-				Keybd.Down(key_val);
+				KeybdDownCompos(key_val);
 			}
 			else if (action == "UP") {
-				Keybd.Up(key_val);
+				KeybdUpCompos(key_val);
 			}
 			else if (action == "CLICK") {
 				int du = 0;
@@ -214,7 +197,7 @@ int main(int argc, char const* argv[]) {
 					string du_ = argv[4];
 					du = Str2Int(du_);
 				}
-				Keybd.Press(key_val, du);
+				KeybdPressCompos(key_val, du);
 			}
 			else {
 				ErrExit(ERR_WRONG_ARG);
