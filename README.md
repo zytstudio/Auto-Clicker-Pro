@@ -9,7 +9,7 @@ Only support Windows XP and above currently.
 
 This is a portable app, so you don't need to install.
 
-Download from Release and extract `AutoClickerPro.dll` and `AutoClickerPro-CMD.exe` into one folder.
+Download from [Release](https://github.com/zytstudio/Auto-Clicker-Pro/releases) and extract `AutoClickerPro.dll` and `AutoClickerPro-CMD.exe` into one folder.
 
 Run a terminal in that folder and type commands to run.
 
