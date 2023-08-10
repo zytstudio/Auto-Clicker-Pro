@@ -1,1 +1,2 @@
-# auto_clicker_pro
+# Auto Clicker Pro
+Another auto clicker.
